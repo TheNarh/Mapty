@@ -277,6 +277,61 @@ class App {
       },
     });
   }
+
+  // NEW FEATURE: Handle Edit and Delete Buttons
+  _handleWorkoutActions(e) {
+    const workoutEl = e.target.closest('.workout');
+    if (!workoutEl) return;
+
+    const id = workoutEl.dataset.id;
+    const workout = this.#workouts.find(work => work.id === id);
+
+    // DELETE
+    if (e.target.classList.contains('btn--delete')) {
+      if (confirm('Are you sure you want to delete this workout?')) {
+        this.#workouts = this.#workouts.filter(work => work.id !== id);
+        workoutEl.remove();
+        this._setLocalStorage();
+      }
+    }
+
+    // EDIT
+    if (e.target.classList.contains('btn--edit')) {
+      inputType.value = workout.type;
+      inputDistance.value = workout.distance;
+      inputDuration.value = workout.duration;
+
+      if (workout.type === 'running') {
+        inputCadence.value = workout.cadence;
+        inputElevation.closest('.form__row').classList.add('form__row--hidden');
+        inputCadence.closest('.form__row').classList.remove('form__row--hidden');
+      }
+
+      if (workout.type === 'cycling') {
+        inputElevation.value = workout.elevationGain;
+        inputCadence.closest('.form__row').classList.add('form__row--hidden');
+        inputElevation.closest('.form__row').classList.remove('form__row--hidden');
+      }
+
+      form.classList.remove('hidden');
+      inputDistance.focus();
+
+      // When re-submitted, replace the existing workout
+      form.onsubmit = ev => {
+        ev.preventDefault();
+        workout.distance = +inputDistance.value;
+        workout.duration = +inputDuration.value;
+
+        if (workout.type === 'running')
+          workout.cadence = +inputCadence.value;
+        else workout.elevationGain = +inputElevation.value;
+
+        this._setLocalStorage();
+        location.reload();
+      };
+    }
+  }
+
   _setLocalStorage() {
     localStorage.setItem('workouts', JSON.stringify(this.#workouts));
   }
