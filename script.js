@@ -264,6 +264,14 @@ class App {
           </div>
         </li>`;
 
+    // Add Edit and Delete Buttons
+    html += `
+      <div class="workout__actions">
+        <button class="btn--edit">✏️ Edit</button>
+        <button class="btn--delete">🗑 Delete</button>
+      </div>
+    </li>`;
+
     form.insertAdjacentHTML('afterend', html);
   }
 
@@ -284,7 +292,7 @@ class App {
     });
   }
 
-  // NEW FEATURE: Handle Edit and Delete Buttons
+  // Handle Edit and Delete Buttons
   _handleWorkoutActions(e) {
     const workoutEl = e.target.closest('.workout');
     if (!workoutEl) return;
