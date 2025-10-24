@@ -83,6 +83,12 @@ class App {
     form.addEventListener('submit', this._newWorkout.bind(this));
     inputType.addEventListener('change', this._toggleElevationField);
     containerWorkouts.addEventListener('click', this._moveToPopup.bind(this));
+
+    // Listen for delete and edit button clicks
+    containerWorkouts.addEventListener(
+      'click',
+      this._handleWorkoutActions.bind(this)
+    );
   }
 
   _getPosition() {
@@ -304,13 +310,17 @@ class App {
       if (workout.type === 'running') {
         inputCadence.value = workout.cadence;
         inputElevation.closest('.form__row').classList.add('form__row--hidden');
-        inputCadence.closest('.form__row').classList.remove('form__row--hidden');
+        inputCadence
+          .closest('.form__row')
+          .classList.remove('form__row--hidden');
       }
 
       if (workout.type === 'cycling') {
         inputElevation.value = workout.elevationGain;
         inputCadence.closest('.form__row').classList.add('form__row--hidden');
-        inputElevation.closest('.form__row').classList.remove('form__row--hidden');
+        inputElevation
+          .closest('.form__row')
+          .classList.remove('form__row--hidden');
       }
 
       form.classList.remove('hidden');
@@ -322,8 +332,7 @@ class App {
         workout.distance = +inputDistance.value;
         workout.duration = +inputDuration.value;
 
-        if (workout.type === 'running')
-          workout.cadence = +inputCadence.value;
+        if (workout.type === 'running') workout.cadence = +inputCadence.value;
         else workout.elevationGain = +inputElevation.value;
 
         this._setLocalStorage();
