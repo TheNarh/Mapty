@@ -267,8 +267,8 @@ class App {
     // Add Edit and Delete Buttons
     html += `
       <div class="workout__actions">
-        <button class="btn--edit">✏️ Edit</button>
-        <button class="btn--delete">🗑 Delete</button>
+        <button class="btn btn--edit">✏️ Edit</button>
+        <button class="btn btn--delete">🗑 Delete</button>
       </div>
     </li>`;
 
@@ -294,57 +294,37 @@ class App {
 
   // Handle Edit and Delete Buttons
   _handleWorkoutActions(e) {
+    const btn = e.target.closest('button');
+    if (!btn) return;
+
     const workoutEl = e.target.closest('.workout');
+
     if (!workoutEl) return;
 
     const id = workoutEl.dataset.id;
     const workout = this.#workouts.find(work => work.id === id);
 
     // DELETE
-    if (e.target.classList.contains('btn--delete')) {
-      if (confirm('Are you sure you want to delete this workout?')) {
-        this.#workouts = this.#workouts.filter(work => work.id !== id);
-        workoutEl.remove();
-        this._setLocalStorage();
-      }
+    if (btn.classList.contains('btn--delete')) {
+      this.#workouts = this.#workouts.filter(w => w.id !== workoutId);
+      workoutEl.remove();
+      this._setLocalStorage();
     }
 
-    // EDIT
-    if (e.target.classList.contains('btn--edit')) {
-      inputType.value = workout.type;
-      inputDistance.value = workout.distance;
-      inputDuration.value = workout.duration;
+     // ✏️ Edit workout
+  if (btn.classList.contains('btn--edit')) {
+    // For simplicity, show the form again prefilled
+    form.classList.remove('hidden');
+    inputType.value = workout.type;
+    inputDistance.value = workout.distance;
+    inputDuration.value = workout.duration;
+    if (workout.type === 'running') inputCadence.value = workout.cadence;
+    if (workout.type === 'cycling') inputElevation.value = workout.elevationGain;
 
-      if (workout.type === 'running') {
-        inputCadence.value = workout.cadence;
-        inputElevation.closest('.form__row').classList.add('form__row--hidden');
-        inputCadence
-          .closest('.form__row')
-          .classList.remove('form__row--hidden');
-      }
-
-      if (workout.type === 'cycling') {
-        inputElevation.value = workout.elevationGain;
-        inputCadence.closest('.form__row').classList.add('form__row--hidden');
-        inputElevation
-          .closest('.form__row')
-          .classList.remove('form__row--hidden');
-      }
-
-      form.classList.remove('hidden');
-      inputDistance.focus();
-
-      // When re-submitted, replace the existing workout
-      form.onsubmit = ev => {
-        ev.preventDefault();
-        workout.distance = +inputDistance.value;
-        workout.duration = +inputDuration.value;
-
-        if (workout.type === 'running') workout.cadence = +inputCadence.value;
-        else workout.elevationGain = +inputElevation.value;
-
-        this._setLocalStorage();
-        location.reload();
+    // Remove the old one when saving again
+    this.#workouts = this.#workouts.filter(w => w.id !== workoutId);
+    workoutEl.remove();
+    this._setLocalStorage();
       };
     }
   }
