@@ -72,6 +72,7 @@ class App {
   #mapZoomLevel = 13;
   #mapEvent;
   #workouts = [];
+  #markers = [];
 
   constructor() {
     // Get user's position
@@ -219,6 +220,8 @@ class App {
         `${workout.type === 'running' ? '🏃‍♂️' : '🚴‍♀️'} ${workout.description}`
       )
       .openPopup();
+
+    this.markers.push({ id: workout.id, marker }); // take note
   }
 
   _renderWorkout(workout) {
@@ -306,6 +309,14 @@ class App {
     if (btn.classList.contains('btn--delete')) {
       this.#workouts = this.#workouts.filter(w => w.id !== workoutId);
       workoutEl.remove();
+
+      // remove marker from map
+      const markerObj = this.#markers.find(m => m.id === workoutId);
+      if (markerObj) {
+        this.#map.removeLayer(markerObj.marker);
+        this.#markers = this.#markers.filter(m => m.id !== workoutId);
+      }
+
       this._setLocalStorage();
     }
 
@@ -321,6 +332,14 @@ class App {
 
       this.#workouts = this.#workouts.filter(w => w.id !== workoutId);
       workoutEl.remove();
+
+      // ✅ NEW — remove old marker on edit too
+      const markerObj = this.#markers.find(m => m.id === workoutId);
+      if (markerObj) {
+        this.#map.removeLayer(markerObj.marker);
+        this.#markers = this.#markers.filter(m => m.id !== workoutId);
+      }
+
       this._setLocalStorage();
     }
   }
