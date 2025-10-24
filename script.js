@@ -40,6 +40,7 @@ class Running extends Workout {
     return this.pace;
   }
 }
+
 class Cycling extends Workout {
   type = 'cycling';
   constructor(coords, distance, duration, elevationGain) {
@@ -248,8 +249,7 @@ class App {
             <span class="workout__icon">🦶🏼</span>
             <span class="workout__value">${workout.cadence}</span>
             <span class="workout__unit">spm</span>
-          </div>
-        </li>`;
+          </div>`;
 
     if (workout.type === 'cycling')
       html += `<div class="workout__details">
@@ -261,10 +261,9 @@ class App {
             <span class="workout__icon">⛰</span>
             <span class="workout__value">${workout.elevationGain}</span>
             <span class="workout__unit">m</span>
-          </div>
-        </li>`;
+          </div>`;
 
-    // Add Edit and Delete Buttons
+    // Add Edit and Delete Buttons (fixed closing tag)
     html += `
       <div class="workout__actions">
         <button class="btn btn--edit">✏️ Edit</button>
@@ -298,34 +297,31 @@ class App {
     if (!btn) return;
 
     const workoutEl = e.target.closest('.workout');
-
     if (!workoutEl) return;
 
-    const id = workoutEl.dataset.id;
-    const workout = this.#workouts.find(work => work.id === id);
+    const workoutId = workoutEl.dataset.id; // ✅ fixed variable name
+    const workout = this.#workouts.find(work => work.id === workoutId);
 
-    // DELETE
+    // 🗑 DELETE
     if (btn.classList.contains('btn--delete')) {
       this.#workouts = this.#workouts.filter(w => w.id !== workoutId);
       workoutEl.remove();
       this._setLocalStorage();
     }
 
-     // ✏️ Edit workout
-  if (btn.classList.contains('btn--edit')) {
-    // For simplicity, show the form again prefilled
-    form.classList.remove('hidden');
-    inputType.value = workout.type;
-    inputDistance.value = workout.distance;
-    inputDuration.value = workout.duration;
-    if (workout.type === 'running') inputCadence.value = workout.cadence;
-    if (workout.type === 'cycling') inputElevation.value = workout.elevationGain;
+    // ✏️ EDIT
+    if (btn.classList.contains('btn--edit')) {
+      form.classList.remove('hidden');
+      inputType.value = workout.type;
+      inputDistance.value = workout.distance;
+      inputDuration.value = workout.duration;
+      if (workout.type === 'running') inputCadence.value = workout.cadence;
+      if (workout.type === 'cycling')
+        inputElevation.value = workout.elevationGain;
 
-    // Remove the old one when saving again
-    this.#workouts = this.#workouts.filter(w => w.id !== workoutId);
-    workoutEl.remove();
-    this._setLocalStorage();
-      };
+      this.#workouts = this.#workouts.filter(w => w.id !== workoutId);
+      workoutEl.remove();
+      this._setLocalStorage();
     }
   }
 
@@ -335,11 +331,9 @@ class App {
 
   _getLocalStorage() {
     const data = JSON.parse(localStorage.getItem('workouts'));
-
     if (!data) return;
 
     this.#workouts = data;
-
     this.#workouts.forEach(work => {
       this._renderWorkout(work);
     });
