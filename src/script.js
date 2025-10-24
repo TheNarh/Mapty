@@ -120,7 +120,7 @@ class App {
 
     this.#map.on('click', this._showForm.bind(this));
 
-    // ✅ Render workouts and markers once the map is loaded
+    // Render workouts and markers once the map is loaded
     this.#workouts.forEach(work => {
       this._renderWorkout(work);
       this._renderWorkoutMarker(work);
@@ -207,7 +207,7 @@ class App {
       )
       .openPopup();
 
-    // ✅ store marker with workout ID
+    // store marker with workout ID
     this.#markers.push({ id: workout.id, marker });
   }
 
@@ -257,7 +257,7 @@ class App {
         </div>
       `;
 
-    // ✅ Edit/Delete buttons added after details, then close li properly
+    // Edit/Delete buttons added after details
     html += `
       <div class="workout__actions">
         <button class="btn btn--edit">✏️ Edit</button>
@@ -291,7 +291,7 @@ class App {
     const id = workoutEl.dataset.id;
     const workout = this.#workouts.find(work => work.id === id);
 
-    // 🗑 Delete workout
+    // Delete workout
     if (btn.classList.contains('btn--delete')) {
       // remove from array
       this.#workouts = this.#workouts.filter(w => w.id !== id);
@@ -306,7 +306,7 @@ class App {
       this._setLocalStorage();
     }
 
-    // ✏️ Edit workout
+    // Edit workout
     if (btn.classList.contains('btn--edit')) {
       form.classList.remove('hidden');
       inputType.value = workout.type;
