@@ -189,6 +189,29 @@ a:visited {
   color: var(--color-light--2);
 }
 
+/* buttons */
+.workout__actions {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+}
+
+.btn {
+  border: none;
+  padding: 4px 10px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.btn--edit {
+  background-color: #ffd700;
+}
+
+.btn--delete {
+  background-color: #ff4d4d;
+  color: #fff;
+}
+
 /* MAP */
 #map {
   flex: 1;
