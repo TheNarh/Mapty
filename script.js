@@ -122,6 +122,7 @@ class App {
 
     this.#workouts.forEach(work => {
       this._renderWorkoutMarker(work);
+      this._renderWorkout(work);
     });
   }
 
